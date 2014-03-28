@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 public class PointCanvas : Singleton<PointCanvas> {
 	Texture2D tex;
@@ -21,13 +20,12 @@ public class PointCanvas : Singleton<PointCanvas> {
 	}
 
 	public void AddPoint(byte teamIndex) {
-		byteImg[ChooseRandomFreeIndex()] = teamIndex;
+		var index = ChooseRandomFreeIndex();
+		if (index > -1) byteImg[index] = teamIndex;
+		else ClearImage();
 	}
 
 	int ChooseRandomFreeIndex() {
-		// want to build: list of indices of black pixels
-		// easy mode: for loop, if value is 0, add i
-
 		var freeIndices = new List<int>();
 		for (int i = 0; i < byteImg.Length; i++) {
 			if (byteImg[i] == 0) {
@@ -35,7 +33,8 @@ public class PointCanvas : Singleton<PointCanvas> {
 			}
 		}
 
-		return freeIndices[UnityEngine.Random.Range(0, freeIndices.Count)];
+		if (freeIndices.Count > 0) return freeIndices[UnityEngine.Random.Range(0, freeIndices.Count)];
+		else return -1;
 	}
 
 	Color32[] IndexedImageToColor(byte[] image) {
