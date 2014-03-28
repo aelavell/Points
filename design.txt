@@ -1,0 +1,12 @@
+POINTS (pointless)
+
+core idea: 
+- tug of war between 4 floors, 
+- 4 controllers on each floor, 
+- every button on every controller gives a point to the floor, 
+- every floor has a cumulative score, 
+- lots of activity in a short period yields a stimulus reward (visual/audial)
+- 
+
+fx:
+- when you get a point, the last number sheds off and tumbles unto infinity
