@@ -6,6 +6,7 @@ public class PointCanvas : Singleton<PointCanvas> {
 	Texture2D tex;
 	public Color32[] colorMap;
 	byte[] byteImg;
+	StateRelay stateRelay;
 
 	void Start() {
 		tex = new Texture2D(Mix.Instance.CanvasSize, Mix.Instance.CanvasSize);
@@ -17,6 +18,10 @@ public class PointCanvas : Singleton<PointCanvas> {
 
 	void Update() {
 		UpdateDisplay(byteImg);
+	}
+
+	public void RegisterStateRelay(StateRelay relay) {
+		stateRelay = relay;
 	}
 
 	public void AddPoint(byte teamIndex) {
@@ -48,14 +53,14 @@ public class PointCanvas : Singleton<PointCanvas> {
 	}
 
 	[ContextMenu("Generate")]
-	void GenerateRandomImage() {
+	public void GenerateRandomImage() {
 		for (int i = 0; i < Mathf.Pow(Mix.Instance.CanvasSize, 2); i++) {
 			byteImg[i] = (byte)UnityEngine.Random.Range(0, 5);
 		}
 	}
 
 	[ContextMenu("Clear")]
-	void ClearImage() {
+	public void ClearImage() {
 		for (int i = 0; i < Mathf.Pow(Mix.Instance.CanvasSize, 2); i++) {
 			byteImg[i] = 0;
 		}
