@@ -12,14 +12,15 @@ public class StateRelay : Singleton<StateRelay> {
 	int firstPoint;
 	void Start() {
 		canvas = new char[Mix.Instance.CanvasSize * Mix.Instance.CanvasSize];
+		ClearImage();
 		pointsPerTeam = new int[4] {0, 0, 0, 0};
 	}
-
+	
 	void OnGUI() {
 		GUI.Label(new Rect(5,0,100,30), pointsPerTeam[0].ToString());
 	}
 
-	public void UpdatePoints(char teamIndex, int points) {
+	public void UpdatePoints(byte teamIndex, int points) {
 		if (points != pointsPerTeam[teamIndex]) {
 			var pointsAcquired = points - pointsPerTeam[teamIndex];
 			for (int i = 0; i < pointsAcquired; i++) {
@@ -30,16 +31,16 @@ public class StateRelay : Singleton<StateRelay> {
 	}
 
 	// TODO: refactor to AddPointSSS
-	public void AddPoint(char teamIndex) {
+	public void AddPoint(byte teamIndex) {
 		var index = ChooseRandomFreeIndex();
-		if (index > -1) canvas[index] = teamIndex;
+		if (index > -1) canvas[index] = (char)teamIndex;
 		//else ClearImage();
 	}
 
 	int ChooseRandomFreeIndex() {
 		var freeIndices = new List<int>();
 		for (int i = 0; i < canvas.Length; i++) {
-			if (canvas[i] == 0) {
+			if (canvas[i] == Mix.Instance.BlankColorIndex) {
 				freeIndices.Add(i);
 			}
 		}
@@ -87,21 +88,20 @@ public class StateRelay : Singleton<StateRelay> {
 		state = State.victory;
 	}
 
-	/*
+
 	[ContextMenu("Generate")]
 	public void GenerateRandomImage() {
 		for (int i = 0; i < Mathf.Pow(Mix.Instance.CanvasSize, 2); i++) {
-			byteImg[i] = (byte)UnityEngine.Random.Range(0, 5);
+			canvas[i] = (char)UnityEngine.Random.Range(0, 5);
 		}
 	}
 	
 	[ContextMenu("Clear")]
 	public void ClearImage() {
 		for (int i = 0; i < Mathf.Pow(Mix.Instance.CanvasSize, 2); i++) {
-			byteImg[i] = 0;
+			canvas[i] = (char)Mix.Instance.BlankColorIndex;
 		}
 	}
-	*/
 }	
 
 public enum State {

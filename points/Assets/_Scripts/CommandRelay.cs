@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class CommandRelay : MonoBehaviour {
-	public char teamIndex;
+	public byte teamIndex;
 	int points;
 	public KeyCode[] keys;
 
