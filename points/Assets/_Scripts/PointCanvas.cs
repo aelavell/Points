@@ -14,14 +14,12 @@ public class PointCanvas : Singleton<PointCanvas> {
 		renderer.material.mainTexture = tex;
 		byteImg = new byte[(int)Mathf.Pow(Mix.Instance.CanvasSize, 2)];
 		ClearImage();
+
+		GlobalEvents.stateRelayCreated += () => StateRelay.Instance.enterPlayState += () => GenerateRandomImage();
 	}
 
 	void Update() {
 		UpdateDisplay(byteImg);
-	}
-
-	public void RegisterStateRelay(StateRelay relay) {
-		stateRelay = relay;
 	}
 
 	public void AddPoint(byte teamIndex) {

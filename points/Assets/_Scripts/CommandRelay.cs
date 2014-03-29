@@ -6,12 +6,7 @@ public class CommandRelay : MonoBehaviour {
 	public KeyCode[] keys;
 
 	void OnNetworkInstantiate(NetworkMessageInfo info) {
-		if (Network.isServer) {
-			Server.Instance.RegisterCommandRelay(this, info.sender);
-		}
-		else {
-			// delete
-		}
+		if (GlobalEvents.commandRelayCreated != null) GlobalEvents.commandRelayCreated(this, info.sender);
 	}
 
 	void KeyPressed(byte index) {

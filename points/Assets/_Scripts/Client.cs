@@ -10,6 +10,7 @@ public class Client : Singleton<Client> {
 	CommandRelay commandRelay;
 	
 	void Start() {
+		GlobalEvents.stateRelayCreated += CreateCommandRelay;
 		Network.Connect(ip, port);
 	}
 
@@ -20,11 +21,10 @@ public class Client : Singleton<Client> {
 	void OnDisconnectedFromServer(NetworkDisconnection info) {
 		Network.Connect(ip, port);
 	}
-
-	public void GameInitialized(StateRelay relay) {
-		PointCanvas.Instance.RegisterStateRelay(relay);
+	
+	public void CreateCommandRelay() {
 		commandRelay = Network.Instantiate(commandRelayPrefab, Vector3.zero, Quaternion.identity, 0) as CommandRelay;
 		commandRelay.teamIndex = teamIndex;
-		PointCanvas.Instance.GenerateRandomImage();
+		//PointCanvas.Instance.GenerateRandomImage();
 	}
 }

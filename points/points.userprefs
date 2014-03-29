@@ -1,15 +1,17 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/_Scripts/CommandRelay.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/_Scripts/PointCanvas.cs">
     <Files>
-      <File FileName="Assets/_Scripts/Server.cs" Line="11" Column="1" />
-      <File FileName="Assets/_Scripts/CommandRelay.cs" Line="21" Column="71" />
-      <File FileName="Assets/_Scripts/Client.cs" Line="1" Column="1" />
-      <File FileName="Assets/_Scripts/PointCanvas.cs" Line="24" Column="9" />
+      <File FileName="Assets/_Scripts/Server.cs" Line="21" Column="78" />
+      <File FileName="Assets/_Scripts/CommandRelay.cs" Line="7" Column="2" />
+      <File FileName="Assets/_Scripts/Client.cs" Line="31" Column="4" />
+      <File FileName="Assets/_Scripts/PointCanvas.cs" Line="24" Column="20" />
       <File FileName="Assets/_Scripts/Singleton.cs" Line="1" Column="1" />
       <File FileName="Assets/MixingBoard/Mix.cs" Line="1" Column="1" />
-      <File FileName="Assets/_Scripts/StateRelay.cs" Line="1" Column="1" />
+      <File FileName="Assets/_Scripts/StateRelay.cs" Line="18" Column="6" />
       <File FileName="Assets/_Scripts/RPCRelay.cs" Line="1" Column="1" />
+      <File FileName="Assets/_Scripts/StateMachine.cs" Line="39" Column="35" />
+      <File FileName="Assets/_Scripts/StateMachineState.cs" Line="50" Column="6" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
