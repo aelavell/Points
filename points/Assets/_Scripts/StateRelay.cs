@@ -4,20 +4,67 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class StateRelay : Singleton<StateRelay> {
-	byte[] canvas;
-	int[] points;
-
 	public State state = State.init;
-
 	public Action enterPlayState;
 	public Action enterVictoryState;
+	public char[] canvas;
+	public int[] pointsPerTeam;
+	int firstPoint;
+	void Start() {
+		canvas = new char[Mix.Instance.CanvasSize * Mix.Instance.CanvasSize];
+		pointsPerTeam = new int[4] {0, 0, 0, 0};
+	}
+
+	void OnGUI() {
+		GUI.Label(new Rect(5,0,100,30), pointsPerTeam[0].ToString());
+	}
+
+	public void UpdatePoints(char teamIndex, int points) {
+		if (points != pointsPerTeam[teamIndex]) {
+			var pointsAcquired = points - pointsPerTeam[teamIndex];
+			for (int i = 0; i < pointsAcquired; i++) {
+				AddPoint(teamIndex);
+			}
+			pointsPerTeam[teamIndex] = points;
+		}
+	}
+
+	// TODO: refactor to AddPointSSS
+	public void AddPoint(char teamIndex) {
+		var index = ChooseRandomFreeIndex();
+		if (index > -1) canvas[index] = teamIndex;
+		//else ClearImage();
+	}
+
+	int ChooseRandomFreeIndex() {
+		var freeIndices = new List<int>();
+		for (int i = 0; i < canvas.Length; i++) {
+			if (canvas[i] == 0) {
+				freeIndices.Add(i);
+			}
+		}
+
+		if (freeIndices.Count > 0) return freeIndices[UnityEngine.Random.Range(0, freeIndices.Count)];
+		else return -1;
+	}
 
 	void OnNetworkInstantiate(NetworkMessageInfo info) {
 		if (GlobalEvents.stateRelayCreated != null) GlobalEvents.stateRelayCreated();
 	}
 	
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) {
-
+		try {
+			stream.Serialize(ref pointsPerTeam[0]);
+			stream.Serialize(ref pointsPerTeam[1]);
+			stream.Serialize(ref pointsPerTeam[2]);
+			stream.Serialize(ref pointsPerTeam[3]);
+			for (int i = 0; i < Mathf.Pow(Mix.Instance.CanvasSize, 2); i++) {
+				stream.Serialize(ref canvas[i]);
+			}
+		}
+		catch (Exception e) {
+			// Do nothing, this should only happen right at the beginning
+		}
 	}
 
 	public void EnterPlayState() {
@@ -39,6 +86,22 @@ public class StateRelay : Singleton<StateRelay> {
 		if (enterVictoryState != null) enterVictoryState();
 		state = State.victory;
 	}
+
+	/*
+	[ContextMenu("Generate")]
+	public void GenerateRandomImage() {
+		for (int i = 0; i < Mathf.Pow(Mix.Instance.CanvasSize, 2); i++) {
+			byteImg[i] = (byte)UnityEngine.Random.Range(0, 5);
+		}
+	}
+	
+	[ContextMenu("Clear")]
+	public void ClearImage() {
+		for (int i = 0; i < Mathf.Pow(Mix.Instance.CanvasSize, 2); i++) {
+			byteImg[i] = 0;
+		}
+	}
+	*/
 }	
 
 public enum State {

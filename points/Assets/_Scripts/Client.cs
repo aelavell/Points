@@ -24,7 +24,7 @@ public class Client : Singleton<Client> {
 	
 	public void CreateCommandRelay() {
 		commandRelay = Network.Instantiate(commandRelayPrefab, Vector3.zero, Quaternion.identity, 0) as CommandRelay;
-		commandRelay.teamIndex = teamIndex;
+		commandRelay.teamIndex = (char)teamIndex;
 		//PointCanvas.Instance.GenerateRandomImage();
 	}
 }

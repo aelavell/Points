@@ -2,28 +2,34 @@
 using System.Collections;
 
 public class CommandRelay : MonoBehaviour {
-	public byte teamIndex;
+	public char teamIndex;
+	int points;
 	public KeyCode[] keys;
 
 	void OnNetworkInstantiate(NetworkMessageInfo info) {
 		if (GlobalEvents.commandRelayCreated != null) GlobalEvents.commandRelayCreated(this, info.sender);
 	}
 
-	void KeyPressed(byte index) {
-		PointCanvas.Instance.AddPoint(index);
+	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) {
+		stream.Serialize(ref points);
+		if (stream.isReading) {
+			StateRelay.Instance.UpdatePoints(teamIndex, points);
+		}
 	}
 
-	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) {
-
+	void OnGUI() {
+		GUI.Label(new Rect(5,30,100,30), points.ToString());
 	}
 
 	void Update() {
-		byte i = 0;
-		foreach (var key in keys) {
-			if (Input.GetKeyDown(key)) {
-				KeyPressed((byte)(i+1));
+		if (Network.isClient) {
+			int i = 0;
+			foreach (var key in keys) {
+				if (Input.GetKeyDown(key)) {
+					points++;
+				}
+				i++;
 			}
-			i++;
 		}
 	}
 }

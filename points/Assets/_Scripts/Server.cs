@@ -5,11 +5,13 @@ using System.Linq;
 
 public class Server : Singleton<Server> {
 	public StateRelay stateRelayPrefab;
+	public CommandRelay commandRelayPrefab;
+	public List<CommandRelay> commandRelays;
 
 	int port = 25190;
 	int requiredNumPlayers = 1;
 	List<NetworkPlayer> players;
-	List<CommandRelay> commandRelays;
+
 
 	void Start() {
 		GlobalEvents.commandRelayCreated += RegisterCommandRelay;
