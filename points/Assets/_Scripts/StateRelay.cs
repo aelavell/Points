@@ -24,17 +24,25 @@ public class StateRelay : Singleton<StateRelay> {
 		if (points != pointsPerTeam[teamIndex]) {
 			var pointsAcquired = points - pointsPerTeam[teamIndex];
 			for (int i = 0; i < pointsAcquired; i++) {
-				AddPoint(teamIndex);
+				var couldAdd = AddPoint(teamIndex);
+				if (!couldAdd) {
+					ClearImage();
+				}
 			}
 			pointsPerTeam[teamIndex] = points;
 		}
 	}
 
 	// TODO: refactor to AddPointSSS
-	public void AddPoint(byte teamIndex) {
+	public bool AddPoint(byte teamIndex) {
 		var index = ChooseRandomFreeIndex();
-		if (index > -1) canvas[index] = (char)teamIndex;
-		//else ClearImage();
+		if (index > -1) {
+			canvas[index] = (char)teamIndex;
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	int ChooseRandomFreeIndex() {
