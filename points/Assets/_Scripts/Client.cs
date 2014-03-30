@@ -4,7 +4,7 @@ using System.Collections;
 public class Client : Singleton<Client> {
 	string ip = "127.0.0.1";
 	int port = 25190;
-	public byte teamIndex;
+	//public byte teamIndex;
 	public StateRelay stateRelayPrefab; 
 	public CommandRelay commandRelayPrefab;
 	CommandRelay commandRelay;
@@ -24,7 +24,7 @@ public class Client : Singleton<Client> {
 	
 	public void CreateCommandRelay() {
 		commandRelay = Network.Instantiate(commandRelayPrefab, Vector3.zero, Quaternion.identity, 0) as CommandRelay;
-		commandRelay.teamIndex = teamIndex;
+//		commandRelay.teamIndex = teamIndex;
 		//PointCanvas.Instance.GenerateRandomImage();
 	}
 }

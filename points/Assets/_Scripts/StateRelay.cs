@@ -15,13 +15,9 @@ public class StateRelay : Singleton<StateRelay> {
 		ClearImage();
 		pointsPerTeam = new int[4] {0, 0, 0, 0};
 	}
-	
-	void OnGUI() {
-		GUI.Label(new Rect(5,0,100,30), pointsPerTeam[0].ToString());
-	}
 
 	public void UpdatePoints(byte teamIndex, int points) {
-		if (points != pointsPerTeam[teamIndex]) {
+		if (Network.isServer && points != pointsPerTeam[teamIndex]) {
 			var pointsAcquired = points - pointsPerTeam[teamIndex];
 			for (int i = 0; i < pointsAcquired; i++) {
 				var couldAdd = AddPoint(teamIndex);

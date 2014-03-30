@@ -9,7 +9,7 @@ public class Server : Singleton<Server> {
 	public List<CommandRelay> commandRelays;
 
 	int port = 25190;
-	int requiredNumPlayers = 1;
+	int requiredNumPlayers = 2;
 	List<NetworkPlayer> players;
 
 
