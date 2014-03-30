@@ -67,7 +67,7 @@ public class StateRelay : Singleton<StateRelay> {
 				stream.Serialize(ref canvas[i]);
 			}
 		}
-		catch (Exception e) {
+		catch {
 			// Do nothing, this should only happen right at the beginning
 		}
 	}

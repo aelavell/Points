@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 public class Client : Singleton<Client> {
@@ -8,10 +9,23 @@ public class Client : Singleton<Client> {
 	public StateRelay stateRelayPrefab; 
 	public CommandRelay commandRelayPrefab;
 	CommandRelay commandRelay;
+	bool connected;
 	
 	void Start() {
 		GlobalEvents.stateRelayCreated += CreateCommandRelay;
-		Network.Connect(ip, port);
+	}
+
+	void OnGUI() {
+		if (!connected) {
+			ip = GUI.TextField(new Rect(0, 0, 200, 30), ip);
+			if (GUI.Button(new Rect(0, 60, 60, 60), "Connect")) {
+				Network.Connect(ip, port);	
+			}
+		}
+	}
+
+	void OnConnectedToServer() {
+		connected = true;
 	}
 
 	void OnFailedToConnect(NetworkConnectionError error) {
@@ -20,6 +34,7 @@ public class Client : Singleton<Client> {
 
 	void OnDisconnectedFromServer(NetworkDisconnection info) {
 		Network.Connect(ip, port);
+		connected = false;
 	}
 	
 	public void CreateCommandRelay() {
