@@ -8,7 +8,6 @@ public class Client : Singleton<Client> {
 	//public byte teamIndex;
 	public StateRelay stateRelayPrefab; 
 	public CommandRelay commandRelayPrefab;
-	CommandRelay commandRelay;
 	bool connected;
 	
 	void Start() {
@@ -17,8 +16,8 @@ public class Client : Singleton<Client> {
 
 	void OnGUI() {
 		if (!connected) {
-			ip = GUI.TextField(new Rect(0, 0, 200, 30), ip);
-			if (GUI.Button(new Rect(0, 60, 60, 60), "Connect")) {
+			ip = GUI.TextField(new Rect(Screen.width / 2, 0, 200, 30), ip);
+			if (GUI.Button(new Rect(Screen.width / 2, 60, 60, 60), "Connect")) {
 				Network.Connect(ip, port);	
 			}
 		}
@@ -38,8 +37,6 @@ public class Client : Singleton<Client> {
 	}
 	
 	public void CreateCommandRelay() {
-		commandRelay = Network.Instantiate(commandRelayPrefab, Vector3.zero, Quaternion.identity, 0) as CommandRelay;
-//		commandRelay.teamIndex = teamIndex;
-		//PointCanvas.Instance.GenerateRandomImage();
+	    Network.Instantiate(commandRelayPrefab, Vector3.zero, Quaternion.identity, 0);
 	}
 }

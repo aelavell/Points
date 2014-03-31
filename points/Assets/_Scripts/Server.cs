@@ -9,9 +9,8 @@ public class Server : Singleton<Server> {
 	public List<CommandRelay> commandRelays;
 
 	int port = 25190;
-	int requiredNumPlayers = 2;
+	int requiredNumPlayers = 1;
 	List<NetworkPlayer> players;
-
 
 	void Start() {
 		GlobalEvents.commandRelayCreated += RegisterCommandRelay;

@@ -5,12 +5,15 @@ using System.Collections.Generic;
 public class PointCanvas : Singleton<PointCanvas> {
 	Texture2D tex;
 	public Color32[] colorMap;
+	public List<ColorList> flashMap;
 	StateRelay stateRelay;
 
 	void Start() {
 		tex = new Texture2D(Mix.Instance.CanvasSize, Mix.Instance.CanvasSize);
 		tex.filterMode = FilterMode.Point;
 		renderer.material.mainTexture = tex;
+		ClearDisplay();
+		renderer.enabled = true;
 
 		enabled = false;
 		GlobalEvents.stateRelayCreated += () => enabled = true;
@@ -36,4 +39,18 @@ public class PointCanvas : Singleton<PointCanvas> {
 		}
 		return colorImage;
 	}
+
+	void ClearDisplay() {
+		var blackness = new Color32[(int)Mathf.Pow(Mix.Instance.CanvasSize, 2)];
+		for (int i = 0; i < (int)Mathf.Pow(Mix.Instance.CanvasSize, 2); i++) {
+			blackness[i] = Color.black;
+		}
+		tex.SetPixels32(blackness);
+		tex.Apply();
+	}
+}
+
+[System.Serializable]
+public class ColorList {
+	public List<Color32> colors;
 }
