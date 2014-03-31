@@ -11,6 +11,7 @@ public class Server : Singleton<Server> {
 	int port = 25190;
 	int requiredNumPlayers = 1;
 	List<NetworkPlayer> players;
+	int clientReadyCount;
 
 	void Start() {
 		GlobalEvents.commandRelayCreated += RegisterCommandRelay;
@@ -22,6 +23,7 @@ public class Server : Singleton<Server> {
 
 	void OnServerInitialized() {
 		Network.Instantiate(stateRelayPrefab, Vector3.zero, Quaternion.identity, 0);
+		StateRelay.Instance.enterVictoryState += () => clientReadyCount = 0;
 	}
 
 	void OnPlayerConnected(NetworkPlayer player) {
@@ -40,6 +42,15 @@ public class Server : Singleton<Server> {
 		commandRelays.Add(commandRelay);
 		if (commandRelays.Count == requiredNumPlayers) {
 			StateRelay.Instance.EnterPlayState();
+		}
+	}
+
+	public void ClientIsReady() {
+		if (StateRelay.Instance.state == State.victory) {
+			clientReadyCount++;
+			if (clientReadyCount == requiredNumPlayers) {
+				StateRelay.Instance.EnterPlayState();
+			}
 		}
 	}
 }

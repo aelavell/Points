@@ -8,8 +8,7 @@ public class FlashColor : MonoBehaviour {
 	float time;
 	int index = 0;
 	UIWidget widget;
-
-
+	
 	void Start() {
 		widget = GetComponent<UIWidget>();
 	}

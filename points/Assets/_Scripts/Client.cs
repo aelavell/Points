@@ -8,6 +8,7 @@ public class Client : Singleton<Client> {
 	//public byte teamIndex;
 	public StateRelay stateRelayPrefab; 
 	public CommandRelay commandRelayPrefab;
+	public CommandRelay commandRelay;
 	bool connected;
 	
 	void Start() {
@@ -32,11 +33,11 @@ public class Client : Singleton<Client> {
 	}
 
 	void OnDisconnectedFromServer(NetworkDisconnection info) {
-		Network.Connect(ip, port);
+		//Network.Connect(ip, port);
 		connected = false;
 	}
 	
 	public void CreateCommandRelay() {
-	    Network.Instantiate(commandRelayPrefab, Vector3.zero, Quaternion.identity, 0);
+	    commandRelay = Network.Instantiate(commandRelayPrefab, Vector3.zero, Quaternion.identity, 0) as CommandRelay;
 	}
 }

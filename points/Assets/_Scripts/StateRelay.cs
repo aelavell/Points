@@ -9,28 +9,42 @@ public class StateRelay : Singleton<StateRelay> {
 	public Action enterVictoryState;
 	public char[] canvas;
 	public int[] pointsPerTeam;
+	public int[] allTimePointsPerTeam;
+
 	int firstPoint;
 	void Start() {
 		canvas = new char[Mix.Instance.CanvasSize * Mix.Instance.CanvasSize];
-		ClearImage();
+		ClearCanvas();
 		pointsPerTeam = new int[4] {0, 0, 0, 0};
+		allTimePointsPerTeam = new int[4] {0, 0, 0, 0};
 	}
 
 	public void UpdatePoints(byte teamIndex, int points) {
 		if (Network.isServer && points != pointsPerTeam[teamIndex]) {
 			var pointsAcquired = points - pointsPerTeam[teamIndex];
+
 			for (int i = 0; i < pointsAcquired; i++) {
-				var couldAdd = AddPoint(teamIndex);
+				var couldAdd = AddPointToCanvas(teamIndex);
 				if (!couldAdd) {
-					ClearImage();
+					ClearCanvas();
+					EnterVictoryState();
 				}
 			}
 			pointsPerTeam[teamIndex] = points;
+			if (pointsAcquired >= 0) {
+				// if negative points have been acquired, it means the round points were reset,
+				// don't want to add to all time points
+				allTimePointsPerTeam[teamIndex] += pointsAcquired;
+
+			}
+			else {
+				ClearCanvas();
+			}
 		}
 	}
 
 	// TODO: refactor to AddPointSSS
-	public bool AddPoint(byte teamIndex) {
+	public bool AddPointToCanvas(byte teamIndex) {
 		var index = ChooseRandomFreeIndex();
 		if (index > -1) {
 			canvas[index] = (char)teamIndex;
@@ -63,12 +77,18 @@ public class StateRelay : Singleton<StateRelay> {
 			stream.Serialize(ref pointsPerTeam[1]);
 			stream.Serialize(ref pointsPerTeam[2]);
 			stream.Serialize(ref pointsPerTeam[3]);
+			// start lazy
+			stream.Serialize(ref allTimePointsPerTeam[0]);
+			stream.Serialize(ref allTimePointsPerTeam[1]);
+			stream.Serialize(ref allTimePointsPerTeam[2]);
+			stream.Serialize(ref allTimePointsPerTeam[3]);
+			// end lazy
 			for (int i = 0; i < Mathf.Pow(Mix.Instance.CanvasSize, 2); i++) {
 				stream.Serialize(ref canvas[i]);
 			}
 		}
 		catch {
-			// Do nothing, this should only happen right at the beginning
+			// Do nothing, this error state should only happen right at the beginning
 		}
 	}
 
@@ -94,14 +114,14 @@ public class StateRelay : Singleton<StateRelay> {
 
 
 	[ContextMenu("Generate")]
-	public void GenerateRandomImage() {
+	public void GenerateRandomCanvas() {
 		for (int i = 0; i < Mathf.Pow(Mix.Instance.CanvasSize, 2); i++) {
 			canvas[i] = (char)UnityEngine.Random.Range(0, 5);
 		}
 	}
 	
 	[ContextMenu("Clear")]
-	public void ClearImage() {
+	public void ClearCanvas() {
 		for (int i = 0; i < Mathf.Pow(Mix.Instance.CanvasSize, 2); i++) {
 			canvas[i] = (char)Mix.Instance.BlankColorIndex;
 		}

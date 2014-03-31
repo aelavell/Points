@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class PointKeeper : MonoBehaviour {
+	public bool allTime;
 	public int teamIndex;
 	UILabel label;
 
@@ -12,6 +13,11 @@ public class PointKeeper : MonoBehaviour {
 	}
 
 	void Update () {
-		label.text = StateRelay.Instance.pointsPerTeam[teamIndex].ToString();
+		if (allTime) {
+			label.text = StateRelay.Instance.allTimePointsPerTeam[teamIndex].ToString();
+		}
+		else {
+			label.text = StateRelay.Instance.pointsPerTeam[teamIndex].ToString();
+		}
 	}
 }

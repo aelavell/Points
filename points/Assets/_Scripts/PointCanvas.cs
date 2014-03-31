@@ -9,6 +9,13 @@ public class PointCanvas : Singleton<PointCanvas> {
 	StateRelay stateRelay;
 
 	void Start() {
+		GlobalEvents.stateRelayCreated += () => {
+			StateRelay.Instance.enterVictoryState += () => {
+				ClearDisplay();
+				renderer.enabled = false;
+			};
+			StateRelay.Instance.enterPlayState += () => renderer.enabled = true;
+		};
 		tex = new Texture2D(Mix.Instance.CanvasSize, Mix.Instance.CanvasSize);
 		tex.filterMode = FilterMode.Point;
 		renderer.material.mainTexture = tex;

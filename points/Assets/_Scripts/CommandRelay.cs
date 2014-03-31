@@ -3,16 +3,19 @@ using System.Collections;
 
 public class CommandRelay : MonoBehaviour {
 	public int teamIndex;
-	int points;
+	public int points;
 	public KeyCode[] keys;
+	bool isMyRelay;
 
 	void OnNetworkInstantiate(NetworkMessageInfo info) {
-		//if (Network.isClient && info.sender != Network.player) {
-		//	Destroy(gameObject);
-		//}
-		//else {
-			if (GlobalEvents.commandRelayCreated != null) GlobalEvents.commandRelayCreated(this, info.sender);
-		//}
+		if (Network.isClient && info.sender == Network.player) {
+			// hack to get around the fact that every client has every commandRelay,
+			// ultimately they should only be sent between server and client,
+			// but that can wait
+			isMyRelay = true;
+			//Destroy(gameObject);
+		}
+		if (GlobalEvents.commandRelayCreated != null) GlobalEvents.commandRelayCreated(this, info.sender);
 	}
 
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) {
@@ -23,12 +26,8 @@ public class CommandRelay : MonoBehaviour {
 		}
 	}
 
-	void OnGUI() {
-		GUI.Label(new Rect(5, teamIndex * 30,100,30), teamIndex + " " + points);
-	}
-
 	void Update() {
-		if (Network.isClient) {
+		if (Network.isClient && StateRelay.Instance.state == State.play/*&& isMyRelay*/) {
 			int i = 0;
 			foreach (var key in keys) {
 				if (Input.GetKeyDown(key)) {
@@ -37,5 +36,16 @@ public class CommandRelay : MonoBehaviour {
 				i++;
 			}
 		}
+	}
+
+	[RPC] 
+	void _ReadyToPlay() {
+		if (Network.isServer) {
+			Server.Instance.ClientIsReady();
+		}
+	}
+
+	public void ReadyToPlay() {
+		networkView.RPC("_ReadyToPlay", RPCMode.Server, null);
 	}
 }
