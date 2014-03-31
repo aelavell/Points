@@ -7,7 +7,11 @@ public class VictoryScene : MonoBehaviour {
 	public UILabel thisRoundLabel;
 
 	void Start() {
-		GlobalEvents.stateRelayCreated += () => StateRelay.Instance.enterVictoryState += Play;
+		GlobalEvents.stateRelayCreated += () => {
+			StateRelay.Instance.enterPlayState += () => MasterAudio.PlaySound("points");
+			StateRelay.Instance.enterVictoryState += Play;
+		};
+	
 		animator = GetComponent<Animator>();
 		animator.enabled = false;
 	}
@@ -22,9 +26,14 @@ public class VictoryScene : MonoBehaviour {
 	}
 
 	public void WipeRoundPoints() {
+		MasterAudio.PlaySound("alltime");
 		Client.Instance.commandRelay.points = 0;
 		thisRoundLabel.alpha = 0;
 		thisRoundLabel.GetComponent<FlashAllColors>().enabled = false;
+	}
+
+	public void ThisRound() {
+		MasterAudio.PlaySound("thisround");
 	}
 
 	public void ReadyToPlay() {
