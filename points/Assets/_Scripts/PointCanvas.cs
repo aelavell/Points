@@ -7,6 +7,9 @@ public class PointCanvas : Singleton<PointCanvas> {
 	public Color32[] colorMap;
 	public List<ColorList> flashMap;
 	StateRelay stateRelay;
+	public float flashTime = 0.06f; 
+	float time;
+	int flashIndex = 0;
 
 	void Start() {
 		GlobalEvents.stateRelayCreated += () => {
@@ -33,6 +36,11 @@ public class PointCanvas : Singleton<PointCanvas> {
 	}
 	
 	public void UpdateDisplay(char[] image) {
+		time += Time.deltaTime;
+		if (time > flashTime) {
+			flashIndex = (flashIndex + 1) % (flashMap[0].colors.Count - 1);
+			time -= flashTime;
+		}
 		tex.SetPixels32(IndexedImageToColor(image));
 		tex.Apply();
 	}
@@ -41,7 +49,7 @@ public class PointCanvas : Singleton<PointCanvas> {
 		var colorImage = new Color32[(int)Mathf.Pow(Mix.Instance.CanvasSize, 2)];
 		int i = 0;
 		foreach (var colorIndex in image) {
-			colorImage[i] = colorMap[colorIndex];
+			colorImage[i] = flashMap[colorIndex].colors[flashIndex];
 			i++;
 		}
 		return colorImage;
