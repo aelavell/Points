@@ -9,15 +9,14 @@ public class Server : Singleton<Server> {
 	public List<CommandRelay> commandRelays;
 
 	int port = 25190;
-	int requiredNumPlayers = 2;
 	List<NetworkPlayer> players;
 	int clientReadyCount;
 
 	void Start() {
 		GlobalEvents.commandRelayCreated += RegisterCommandRelay;
 
-		Network.InitializeServer(requiredNumPlayers, port, false);
-		players = new List<NetworkPlayer>();
+		Network.InitializeServer(Mix.Instance.requiredNumPlayers, port, false);
+		players = new List<NetworkPlayer>();	
 		commandRelays = new List<CommandRelay>();
 	}
 
@@ -36,11 +35,12 @@ public class Server : Singleton<Server> {
 		players.Remove(player);
 		Network.RemoveRPCs(player);
 		Network.DestroyPlayerObjects(player);
+
 	}
 
 	public void RegisterCommandRelay(CommandRelay commandRelay, NetworkPlayer sender) {
 		commandRelays.Add(commandRelay);
-		if (commandRelays.Count == requiredNumPlayers) {
+		if (commandRelays.Count == Mix.Instance.requiredNumPlayers) {
 			StateRelay.Instance.EnterPlayState();
 		}
 	}
@@ -48,7 +48,7 @@ public class Server : Singleton<Server> {
 	public void ClientIsReady() {
 		if (StateRelay.Instance.state == State.victory) {
 			clientReadyCount++;
-			if (clientReadyCount == requiredNumPlayers) {
+			if (clientReadyCount == Mix.Instance.requiredNumPlayers) {
 				StateRelay.Instance.EnterPlayState();
 			}
 		}

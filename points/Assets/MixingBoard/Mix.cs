@@ -9,6 +9,7 @@ using UnityEditor;
 public class Mix : ScriptableSingleton<Mix> {
 	// *** Place your custom variables here		
 	public int CanvasSize;
+	public int requiredNumPlayers;
 	public int BlankColorIndex = 4;
 	// *** 
 	

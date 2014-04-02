@@ -16,7 +16,27 @@ public class StateRelay : Singleton<StateRelay> {
 		canvas = new char[Mix.Instance.CanvasSize * Mix.Instance.CanvasSize];
 		ClearCanvas();
 		pointsPerTeam = new int[4] {0, 0, 0, 0};
-		allTimePointsPerTeam = new int[4] {0, 0, 0, 0};
+		ReadAllTimePoints();
+	}
+
+	void ReadAllTimePoints() {
+		if (Network.isServer) {
+			allTimePointsPerTeam = new int[4];
+			for (int i = 0; i < 4; i++) {
+				allTimePointsPerTeam[i] = PlayerPrefs.GetInt("allTimePoints" + i.ToString());
+			}
+		}
+		else {
+			allTimePointsPerTeam = new int[4] {0, 0, 0, 0};
+		}
+	}
+
+	void WriteAllTimePoints() {
+		if (Network.isServer) {
+			for (int i = 0; i < 4; i++) {
+				PlayerPrefs.SetInt("allTimePoints" + i.ToString(), allTimePointsPerTeam[i]);
+			}
+		}
 	}
 
 	public void UpdatePoints(byte teamIndex, int points) {
@@ -110,9 +130,9 @@ public class StateRelay : Singleton<StateRelay> {
 	public void _EnterVictoryState() {
 		if (enterVictoryState != null) enterVictoryState();
 		state = State.victory;
+		WriteAllTimePoints();
 	}
-
-
+	
 	[ContextMenu("Generate")]
 	public void GenerateRandomCanvas() {
 		for (int i = 0; i < Mathf.Pow(Mix.Instance.CanvasSize, 2); i++) {
