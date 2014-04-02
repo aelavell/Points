@@ -5,7 +5,12 @@ public class CommandRelay : MonoBehaviour {
 	public int teamIndex;
 	public int points;
 	public KeyCode[] keys;
+	bool[] keyDelays;
 	bool isMyRelay;
+
+	void Start() {
+		keyDelays = new bool[4];
+	}
 
 	void OnNetworkInstantiate(NetworkMessageInfo info) {
 		if (Network.isClient && info.sender == Network.player) {
@@ -31,9 +36,13 @@ public class CommandRelay : MonoBehaviour {
 			int i = 0;
 			foreach (var key in keys) {
 				if (Input.GetKeyDown(key)) {
-					points++;
-					//MasterAudio.PlaySound("point" + i.ToString());
-					MasterAudio.PlaySound("point", variationName: "point" + i.ToString());
+					keyDelays[i] = !keyDelays[i];
+					// hax to deal with a bug in the arduino button inptu
+					if (keyDelays[i] == true) {
+						points++;
+						//MasterAudio.PlaySound("point" + i.ToString());
+						MasterAudio.PlaySound("point", variationName: "point" + i.ToString());
+					}
 				}
 				i++;
 			}
