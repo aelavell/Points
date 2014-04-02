@@ -32,6 +32,7 @@ public class CommandRelay : MonoBehaviour {
 			foreach (var key in keys) {
 				if (Input.GetKeyDown(key)) {
 					points++;
+					//MasterAudio.PlaySound("point" + i.ToString());
 					MasterAudio.PlaySound("point", variationName: "point" + i.ToString());
 				}
 				i++;
