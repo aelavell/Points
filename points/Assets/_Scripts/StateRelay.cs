@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class StateRelay : Singleton<StateRelay> {
 	public State state = State.init;
 	public Action enterPlayState;
+	public Action enterPauseState;
 	public Action enterVictoryState;
 	public char[] canvas;
 	public int[] pointsPerTeam;
@@ -110,6 +111,16 @@ public class StateRelay : Singleton<StateRelay> {
 		catch {
 			// Do nothing, this error state should only happen right at the beginning
 		}
+	}
+
+	public void EnterPauseState() {
+		networkView.RPC("_EnterPauseState", RPCMode.All, null);
+	}
+	
+	[RPC] 
+	public void _EnterPauseState() {
+		if (enterPauseState != null) enterPauseState();
+		state = State.pause;
 	}
 
 	public void EnterPlayState() {

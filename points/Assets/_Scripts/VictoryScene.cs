@@ -37,6 +37,8 @@ public class VictoryScene : MonoBehaviour {
 	}
 
 	public void ReadyToPlay() {
-		Client.Instance.commandRelay.ReadyToPlay();
+		if (Client.Instance.commandRelay != null) {
+			Client.Instance.commandRelay.ReadyToPlay();
+		}
 	}
 }

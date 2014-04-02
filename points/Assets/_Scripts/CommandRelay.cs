@@ -37,7 +37,7 @@ public class CommandRelay : MonoBehaviour {
 			foreach (var key in keys) {
 				if (Input.GetKeyDown(key)) {
 					keyDelays[i] = !keyDelays[i];
-					// hax to deal with a bug in the arduino button inptu
+					// hax to deal with a bug in the arduino button input
 					if (keyDelays[i] == true) {
 						points++;
 						//MasterAudio.PlaySound("point" + i.ToString());

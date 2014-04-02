@@ -7,17 +7,17 @@ public class Server : Singleton<Server> {
 	public StateRelay stateRelayPrefab;
 	public CommandRelay commandRelayPrefab;
 	public List<CommandRelay> commandRelays;
+	Dictionary <NetworkPlayer, CommandRelay> commandRelaysForPlayers;
 
 	int port = 25190;
-	List<NetworkPlayer> players;
 	int clientReadyCount;
 
 	void Start() {
 		GlobalEvents.commandRelayCreated += RegisterCommandRelay;
 
-		Network.InitializeServer(Mix.Instance.requiredNumPlayers, port, false);
-		players = new List<NetworkPlayer>();	
+		Network.InitializeServer(Mix.Instance.requiredNumPlayers, port, false);	
 		commandRelays = new List<CommandRelay>();
+		commandRelaysForPlayers = new Dictionary<NetworkPlayer, CommandRelay>();
 	}
 
 	void OnServerInitialized() {
@@ -25,21 +25,16 @@ public class Server : Singleton<Server> {
 		StateRelay.Instance.enterVictoryState += () => clientReadyCount = 0;
 	}
 
-	void OnPlayerConnected(NetworkPlayer player) {
-		if (StateRelay.Instance.state == State.init) {
-			players.Add(player);
-		}
-	}
-
 	void OnPlayerDisconnected(NetworkPlayer player) {
-		players.Remove(player);
+		commandRelays.Remove(commandRelaysForPlayers[player]);
+		commandRelaysForPlayers.Remove(player);
 		Network.RemoveRPCs(player);
 		Network.DestroyPlayerObjects(player);
-
 	}
 
 	public void RegisterCommandRelay(CommandRelay commandRelay, NetworkPlayer sender) {
 		commandRelays.Add(commandRelay);
+		commandRelaysForPlayers.Add(sender, commandRelay);
 		if (commandRelays.Count == Mix.Instance.requiredNumPlayers) {
 			StateRelay.Instance.EnterPlayState();
 		}

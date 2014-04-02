@@ -55,7 +55,7 @@ public class PointCanvas : Singleton<PointCanvas> {
 		return colorImage;
 	}
 
-	void ClearDisplay() {
+	public void ClearDisplay() {
 		var blackness = new Color32[(int)Mathf.Pow(Mix.Instance.CanvasSize, 2)];
 		for (int i = 0; i < (int)Mathf.Pow(Mix.Instance.CanvasSize, 2); i++) {
 			blackness[i] = Color.black;
